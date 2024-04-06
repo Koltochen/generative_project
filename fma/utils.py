@@ -9,6 +9,7 @@ import multiprocessing
 import multiprocessing.sharedctypes as sharedctypes
 import os.path
 import ast
+import matplotlib.pyplot as plt
 
 
 # Number of samples per 30s audio clip.
@@ -363,3 +364,19 @@ def build_sample_loader(audio_dir, Y, loader):
                 return self.X[:batch_size], self.Y[:batch_size]
 
     return SampleLoader
+
+def plot_wav(wav, sample_rate=22050, end=None, ax=None):
+    show_needed = ax is None
+    if show_needed:
+        fig, ax = plt.subplots(figsize=(15, 5))
+
+    if end is not None:
+        wav=wav[:end]
+    ax.set_title(f"{len(wav) / sample_rate:.2f} seconds of sound. {len(wav)} amplitudes.")
+    ax.set_xlabel("Sample")
+    ax.set_ylabel("Amplitude")
+    ax.plot(wav[:end])
+    for sec in range(0, len(wav), sample_rate):
+        ax.axvline(sec, color="grey")
+    if show_needed:
+        fig.show()
